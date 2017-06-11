@@ -67,11 +67,16 @@ public class FlightWebService {
 	@GET
 	@Path("/findByDestination")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Flight> findByDestination(@DefaultValue("") @QueryParam("airport") String airportId)
+	public List<Flight> findByDestination(@DefaultValue("") @QueryParam("airportId") String airportId)
 			throws ParseException {
-		Airport a = new Airport();
-		a.setId(Long.valueOf(airportId));
-		return flightService.findByDestination(a);
+		
+		if(!airportId.equals(null)){
+			Airport a = new Airport();
+			a.setId(Long.valueOf(airportId));
+			return flightService.findByDestination(a);
+		}
+		return flightService.findAll();
+	
 	}
 
 	@GET
@@ -86,21 +91,33 @@ public class FlightWebService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Flight> findByArrivalBetween(@DefaultValue("") @QueryParam("datetimeForm") String datetimeForm,
 			@DefaultValue("") @QueryParam("datetimeTo") String datetimeTo) throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat();
-		SimpleDateFormat formatter2 = new SimpleDateFormat();
-		List<Flight> filtered = flightService.findByArrivalBetween(formatter.parse(datetimeForm),
-				formatter2.parse(datetimeTo));
-		return filtered;
+		System.out.println("insidde flightWebService:");
+		System.out.println(datetimeForm);
+		System.out.println(datetimeForm);
+		if(!datetimeForm.equals(null)||datetimeTo.equals(null)){
+			SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/YY");
+			SimpleDateFormat formatter2 = new SimpleDateFormat("MM/dd/YY");
+			
+			if(!(formatter.equals(null)&&formatter2.equals(null))){
+			List<Flight> filtered = flightService.findByArrivalBetween(formatter.parse(datetimeForm),
+					formatter2.parse(datetimeTo));
+			return filtered;
+			}
+			
+		}
+		return flightService.findAll();
 	}
 
 	@GET
 	@Path("/findByDepartureBetween")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Flight> findByDepartureBetween(@DefaultValue("") @QueryParam("datetimeForm") String datetimeForm,
+	public List<Flight> findByDepartureBetween(@DefaultValue("") @QueryParam("datetimeFrom") String datetimeFrom,
 			@DefaultValue("") @QueryParam("datetimeTo") String datetimeTo) throws ParseException {
 		SimpleDateFormat formatter = new SimpleDateFormat();
 		SimpleDateFormat formatter2 = new SimpleDateFormat();
-		List<Flight> filtered = flightService.findByDepartureBetween(formatter.parse(datetimeForm),
+		System.out.println("inside flightweb shuu");
+		System.out.println(datetimeFrom);
+		List<Flight> filtered = flightService.findByDepartureBetween(formatter.parse(datetimeFrom),
 				formatter2.parse(datetimeTo));
 		return filtered;
 	}
@@ -119,9 +136,13 @@ public class FlightWebService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Flight> findByDeparture(@DefaultValue("") @QueryParam("dateTime") String dateTime)
 			throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat();
+		if(dateTime.equals(null)){
+			return flightService.findAll();
+		}else{
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/DD/YY");
 		List<Flight> filtered = flightService.findByDeparture(formatter.parse(dateTime));
 		return filtered;
+		}
 	}
 
 	@POST
