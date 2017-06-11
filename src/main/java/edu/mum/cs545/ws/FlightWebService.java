@@ -3,6 +3,7 @@ package edu.mum.cs545.ws;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -78,6 +79,21 @@ public class FlightWebService {
 		return flightService.findAll();
 	
 	}
+	
+	@GET
+	@Path("/findByOrigin")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Flight> findByOrigin(@DefaultValue("") @QueryParam("originId") String originId)
+			throws ParseException {
+		
+		if(!originId.equals(null)){
+			Airport a = new Airport();
+			a.setId(Long.valueOf(originId));
+			return flightService.findByOrigin(a);
+		}
+		return flightService.findAll();
+	
+	}
 
 	@GET
 	@Path("/findAll")
@@ -123,26 +139,34 @@ public class FlightWebService {
 	}
 
 	@GET
-	@Path("/findByArrival")
+	@Path("/findByArrivalDate")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Flight> findByArrival(@DefaultValue("") @QueryParam("dateTime") String dateTime) throws ParseException {
-		SimpleDateFormat formatter = new SimpleDateFormat();
-		List<Flight> filtered = flightService.findByArrival(formatter.parse(dateTime));
+		System.out.println(dateTime);
+		if(dateTime.isEmpty()){
+			return flightService.findAll();
+		}
+		Date formatter = new SimpleDateFormat("MM/dd/yyyy").parse(dateTime);
+		System.out.println(formatter.toString());
+		List<Flight> filtered = flightService.findByArrival(formatter);
+		System.out.println(filtered.size());
 		return filtered;
 	}
 
 	@GET
-	@Path("/findByDeparture")
+	@Path("/findByDepartureDate")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Flight> findByDeparture(@DefaultValue("") @QueryParam("dateTime") String dateTime)
 			throws ParseException {
-		if(dateTime.equals(null)){
+		System.out.println(dateTime);
+		if(dateTime.isEmpty()){
 			return flightService.findAll();
-		}else{
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/DD/YY");
-		List<Flight> filtered = flightService.findByDeparture(formatter.parse(dateTime));
-		return filtered;
 		}
+		Date formatter = new SimpleDateFormat("MM/dd/yyyy").parse(dateTime);
+		System.out.println(formatter.toString());
+		List<Flight> filtered = flightService.findByDeparture(formatter);
+		System.out.println(filtered.size());
+		return filtered;
 	}
 
 	@POST

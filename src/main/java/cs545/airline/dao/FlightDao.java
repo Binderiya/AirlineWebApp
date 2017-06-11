@@ -89,11 +89,14 @@ public class FlightDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Flight> findByDeparture(Date date, Date time) {
+//		Query query = entityManager.createQuery(
+//				"select distinct f from Flight f where f.departureDate=:departureDate and f.departureTime=:departureTime",
+//				Flight.class);
 		Query query = entityManager.createQuery(
-				"select distinct f from Flight f where f.departureDate=:departureDate and f.departureTime=:departureTime",
-				Flight.class);
+		"select distinct f from Flight f where f.departureDate=:departureDate",
+		Flight.class);
 		query.setParameter("departureDate", date, TemporalType.DATE);
-		query.setParameter("departureTime", time, TemporalType.TIME);
+	//	query.setParameter("departureTime", time, TemporalType.TIME);
 
 		return query.getResultList();
 	}
@@ -112,11 +115,13 @@ public class FlightDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Flight> findByArrival(Date date, Date time) {
+//		Query query = entityManager.createQuery(
+//				"select distinct f from Flight f where f.arrivalDate=:arrivalDate and f.arrivalTime=:arrivalTime",
 		Query query = entityManager.createQuery(
-				"select distinct f from Flight f where f.arrivalDate=:arrivalDate and f.arrivalTime=:arrivalTime",
+				"select distinct f from Flight f where f.arrivalDate=:arrivalDate",
 				Flight.class);
 		query.setParameter("arrivalDate", date, TemporalType.DATE);
-		query.setParameter("arrivalTime", time, TemporalType.TIME);
+		//query.setParameter("arrivalTime", time, TemporalType.TIME);
 
 		return query.getResultList();
 	}
